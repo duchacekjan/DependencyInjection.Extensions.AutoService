@@ -1,1 +1,38 @@
+name: Publish Nuget package
 
+on:
+  release:
+    types: [ released ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./src
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+        working-directory: ./src
+      - name: Create Nuget package
+        run: dotnet pack --no-build --configuration Release --output .
+        working-directory: ./src
+      - name: Get nuget package file path
+        id: package-path
+        run: echo "packagePath=$(find . -type f -iname "*.nupkg" | head -n 1)" >> $GITHUB_OUTPUT
+        working-directory: ./src
+      - name: Publish nuget package
+        run: dotnet nuget push ${PKG_PATH} --source https://api.nuget.org/v3/index.json --api-key ${NUGET_TOKEN} --skip-duplicate
+        working-directory: ./src
+        env:
+          NUGET_TOKEN: ${{secrets.NUGET_TOKEN}}
+          PKG_PATH: ${{steps.package-path.outputs.packagePath}}

@@ -4,38 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9b50eb8d-dab4-40cf-9d26-d18fc671fece" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.DependencyInjection.Extensions.AutoService/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.DependencyInjection.Extensions.AutoService/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.DependencyInjection.Extensions.AutoService/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.DependencyInjection.Extensions.AutoService/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.DependencyInjection.Extensions.AutoService/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Solution1/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/AutoServiceTests.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/AutoServiceTests_classes.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/DependencyInjection.Extensions.AutoService.Tests.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/Infrastructure/BaseImplementation.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/Infrastructure/IBaseA.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/Infrastructure/IBaseB.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/Infrastructure/ITestA.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/Infrastructure/ITestB.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService.Tests/Usings.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService/AutoServiceAttribute.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService/DependencyInjection.Extensions.AutoService.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService/NotImplementingServiceTypeException.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DependencyInjection.Extensions.AutoService/ServiceCollectionExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../.github/workflows/ci.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.github/workflows/publish.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../.github/workflows/publish.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="9b50eb8d-dab4-40cf-9d26-d18fc671fece" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectId" id="2T6lSj9u3aYw3oRmRBDdj98hXl5" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -52,7 +42,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "feature/reinitialization",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -75,15 +65,36 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1690371413102</updated>
-      <workItem from="1690371414654" duration="659000" />
+      <workItem from="1690371414654" duration="763000" />
     </task>
+    <task id="LOCAL-00001" summary="Reinitialized project">
+      <option name="closed" value="true" />
+      <created>1690372144215</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1690372144215</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Sln">
+      <option name="closed" value="true" />
+      <created>1690372172216</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1690372172216</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Reinitialized project" />
+    <MESSAGE value="Sln" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sln" />
   </component>
 </project>

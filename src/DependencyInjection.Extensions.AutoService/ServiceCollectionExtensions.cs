@@ -31,15 +31,29 @@ public static class ServiceCollectionExtensions
     /// Registers all services implementations decorated with <see cref="AutoServiceAttribute"/> from
     /// given assemblies.
     /// </summary>
-    /// <param name="services">Collection of services</param>
-    /// <param name="assemblies">Assemblies containing services implementations</param>
+    /// <param name="services">Collection of services.</param>
+    /// <param name="assemblies">Assemblies containing services implementations.</param>
     /// <returns></returns>
-    /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/></exception>
-    /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type</exception>
+    /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/>.</exception>
+    /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type.</exception>
     public static IServiceCollection AddAutoServices(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+        => services.AddAutoServices(assemblies, null);
+
+    /// <summary>
+    /// Registers all services implementations decorated with <see cref="AutoServiceAttribute"/> from
+    /// given assemblies.
+    /// </summary>
+    /// <param name="services">Collection of services.</param>
+    /// <param name="assemblies">Assemblies containing services implementations.</param>
+    /// <param name="excludeCondition">Exclude condition for testing purposes.</param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/>.</exception>
+    /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type.</exception>
+    internal static IServiceCollection AddAutoServices(this IServiceCollection services, IEnumerable<Assembly> assemblies, Func<TypeInfo, bool>? excludeCondition)
     {
         var servicesImplementations = assemblies.Distinct().SelectMany(s => s.DefinedTypes)
-            .Where(w => Attribute.IsDefined(w, typeof(AutoServiceAttribute)));
+            .Where(w => Attribute.IsDefined(w, typeof(AutoServiceAttribute)))
+            .Where(w => excludeCondition?.Invoke(w) != true);
         foreach (var serviceImplementation in servicesImplementations)
         {
             var serviceDescriptors = serviceImplementation

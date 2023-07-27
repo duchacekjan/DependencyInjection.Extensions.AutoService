@@ -16,7 +16,9 @@
         <LangVersion>latest</LangVersion>
         <Title>DependencyInjection.Extensions.AutoService</Title>
     </PropertyGroup>
-
+    <ItemGroup>
+        <InternalsVisibleTo Include="DependencyInjection.Extensions.AutoService.Tests"/>
+    </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     </ItemGroup>

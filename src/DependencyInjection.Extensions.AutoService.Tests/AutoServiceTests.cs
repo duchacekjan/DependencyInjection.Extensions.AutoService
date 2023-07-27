@@ -31,6 +31,7 @@ public partial class AutoServiceTests
     {
         var services = ServicesFromExecutingAssembly();
         services.Where(w => w.ImplementationType == typeof(MultipleImplementation)).Should().HaveCount(3);
+        services.Where(w => w.ImplementationType == typeof(MultipleImplementationSimple)).Should().HaveCount(3);
     }
 
 
@@ -38,7 +39,7 @@ public partial class AutoServiceTests
     public void Should_register_child_auto_services()
     {
         var services = ServicesFromExecutingAssembly();
-        services.Where(w => w.ImplementationType == typeof(ChildImplementation)).Should().HaveCount(3);
+        services.Where(w => w.ImplementationType == typeof(ChildImplementation)).Should().HaveCount(2);
     }
 
     [Fact]
@@ -49,6 +50,8 @@ public partial class AutoServiceTests
 
         var actual = sut.GetService<BaseImplementation>();
         actual.Should().NotBeNull();
+        
+        services.Where(w => w.ServiceType == typeof(BaseImplementation)).Should().HaveCount(2);
     }
 
     [Fact]
@@ -64,6 +67,7 @@ public partial class AutoServiceTests
     [InlineData(typeof(SingleSingleton), ServiceLifetime.Singleton)]
     [InlineData(typeof(SingleScoped), ServiceLifetime.Scoped)]
     [InlineData(typeof(SingleTransient), ServiceLifetime.Transient)]
+    [InlineData(typeof(BaseImplementation), ServiceLifetime.Transient)]
     public void Should_register_correct_lifetime(Type expectedType, ServiceLifetime expectedLifetime)
     {
         var services = ServicesFromExecutingAssembly();

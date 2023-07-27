@@ -10,44 +10,95 @@ namespace DependencyInjection.Extensions.AutoService;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
 public class AutoServiceAttribute : Attribute
 {
-    private readonly ServiceTypeOptions _options;
+    private readonly bool _allImplementedInterfaces;
+    private readonly SelfImplementationUsage _selfImplementation;
     private readonly ServiceLifetime _serviceLifetime;
+    private readonly List<Type> _serviceTypes;
 
-    public AutoServiceAttribute(bool selfAsService = false, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
-        : this(selfAsService ? ServiceTypeOptions.Self : ServiceTypeOptions.AllImplementedInterfaces, serviceLifetime)
+    /// <summary>
+    /// Registers decorated class as service implementation.
+    /// </summary>
+    /// <param name="selfImplementation">Handling decorated class as service. <see cref="SelfImplementationUsage"/></param>
+    /// <param name="serviceLifetime">Services lifetime.</param>
+    public AutoServiceAttribute(SelfImplementationUsage selfImplementation = SelfImplementationUsage.WhenNoServicePresent, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+        : this(allImplementedInterfaces: true, selfImplementation, serviceLifetime, null)
     {
     }
 
-    public AutoServiceAttribute(ServiceLifetime serviceLifetime, params Type[] types)
-        : this(ServiceTypeOptions.Types(types), serviceLifetime)
+    /// <summary>
+    /// Registers decorated class as service implementation of <paramref name="serviceType"/>
+    /// and <paramref name="servicesTypes"/> with <see cref="ServiceLifetime.Scoped"/>
+    /// </summary>
+    /// <param name="serviceType">Service type.</param>
+    /// <param name="servicesTypes">Another service types.</param>
+    public AutoServiceAttribute(Type serviceType, params Type[] servicesTypes)
+        : this(ServiceLifetime.Scoped, serviceType, servicesTypes)
     {
     }
 
-    private AutoServiceAttribute(ServiceTypeOptions options, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+    /// <summary>
+    /// Registers decorated class as service implementation of <paramref name="serviceType"/>
+    /// and <paramref name="servicesTypes"/> with <paramref name="serviceLifetime"/>
+    /// </summary>
+    /// <param name="serviceLifetime">Services lifetime</param>
+    /// <param name="serviceType">Service type.</param>
+    /// <param name="servicesTypes">Another service types.</param>
+    public AutoServiceAttribute(ServiceLifetime serviceLifetime, Type serviceType, params Type[] servicesTypes)
+        : this(false, SelfImplementationUsage.Disabled, serviceLifetime, servicesTypes.Concat(new[] { serviceType }))
     {
-        _options = options;
+    }
+
+    /// <summary>
+    /// Common constructor for auto registering services.
+    /// </summary>
+    /// <param name="allImplementedInterfaces">If <see langword="true"/> it registers all implemented interfaces</param>
+    /// <param name="selfImplementation">Describes how to handle decorated class type for service registration</param>
+    /// <param name="serviceLifetime">Services lifetime</param>
+    /// <param name="servicesTypes">Types of services</param>
+    private AutoServiceAttribute(bool allImplementedInterfaces, SelfImplementationUsage selfImplementation, ServiceLifetime serviceLifetime, IEnumerable<Type>? servicesTypes)
+    {
+        _serviceTypes = servicesTypes?.ToList() ?? new List<Type>();
+        _allImplementedInterfaces = allImplementedInterfaces;
+        _selfImplementation = selfImplementation;
         _serviceLifetime = serviceLifetime;
     }
 
+    /// <summary>
+    /// Returns list of service registrations.
+    /// </summary>
+    /// <param name="decoratedTypeInfo">Decorated type.</param>
+    /// <returns></returns>
     public IEnumerable<ServiceDescriptor> GetServiceDescriptors(TypeInfo decoratedTypeInfo)
     {
         var result = new List<ServiceDescriptor>();
-        switch (_options.Kind)
+
+
+        if (_allImplementedInterfaces)
         {
-            case ServiceTypeKind.Self:
-                result.Add(GetSelfDescriptor(decoratedTypeInfo.AsType(), _serviceLifetime));
-                break;
-            case ServiceTypeKind.AllImplementedInterfaces:
-                result.AddRange(GetServiceDescriptors(decoratedTypeInfo, _serviceLifetime));
-                break;
-            case ServiceTypeKind.Type:
-                result.AddRange(GetServiceDescriptors(decoratedTypeInfo, _options.ServiceTypes, _serviceLifetime));
-                break;
+            result.AddRange(GetServiceDescriptors(decoratedTypeInfo, _serviceLifetime));
+        }
+
+        if (_serviceTypes.Any())
+        {
+            result.AddRange(GetServiceDescriptors(decoratedTypeInfo, _serviceTypes, _serviceLifetime));
+        }
+
+        var addSelfImplementation = _selfImplementation == SelfImplementationUsage.AddSelfImplementation;
+        var addSelfNoServicePresent = _selfImplementation == SelfImplementationUsage.WhenNoServicePresent && !result.Any();
+        if (addSelfImplementation || addSelfNoServicePresent)
+        {
+            result.Add(GetSelfDescriptor(decoratedTypeInfo.AsType(), _serviceLifetime));
         }
 
         return result;
     }
 
+    /// <summary>
+    /// Returns list of service registrations from implemented interfaces.
+    /// </summary>
+    /// <param name="decoratedTypeInfo"></param>
+    /// <param name="serviceLifetime"></param>
+    /// <returns></returns>
     private static IEnumerable<ServiceDescriptor> GetServiceDescriptors(TypeInfo decoratedTypeInfo, ServiceLifetime serviceLifetime)
     {
         var result = decoratedTypeInfo.ImplementedInterfaces
@@ -61,14 +112,28 @@ public class AutoServiceAttribute : Attribute
         return result;
     }
 
+    /// <summary>
+    /// Returns decorated class as service.
+    /// </summary>
+    /// <param name="implementationType">Decorated class type</param>
+    /// <param name="serviceLifetime">Services lifetime</param>
+    /// <returns></returns>
     private static ServiceDescriptor GetSelfDescriptor(Type implementationType, ServiceLifetime serviceLifetime)
         => new(implementationType, implementationType, serviceLifetime);
 
-    private static IEnumerable<ServiceDescriptor> GetServiceDescriptors(TypeInfo decoratedTypeInfo, IEnumerable<Type>? types, ServiceLifetime serviceLifetime)
+    /// <summary>
+    /// list of service registrations from explicitly given types.
+    /// </summary>
+    /// <param name="decoratedTypeInfo">Decorated class type info.</param>
+    /// <param name="serviceTypes">Types of services.</param>
+    /// <param name="serviceLifetime">Services lifetime.</param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">Decorated class is abstract.</exception>
+    /// <exception cref="NotImplementingServiceTypeException">Decorated class cannot be cast to service type.</exception>
+    private static IEnumerable<ServiceDescriptor> GetServiceDescriptors(TypeInfo decoratedTypeInfo, List<Type> serviceTypes, ServiceLifetime serviceLifetime)
     {
         var result = new List<ServiceDescriptor>();
         var implementationType = decoratedTypeInfo.AsType();
-        var serviceTypes = types?.ToList() ?? new List<Type> { implementationType };
         foreach (var serviceType in serviceTypes)
         {
             if (IsServiceImplementation(serviceType, decoratedTypeInfo))
@@ -101,27 +166,4 @@ public class AutoServiceAttribute : Attribute
                || implementation.ImplementedInterfaces.Contains(service)
                || implementation.IsAssignableTo(service);
     }
-}
-
-public enum ServiceTypeKind
-{
-    Self,
-    AllImplementedInterfaces,
-    Type
-}
-
-internal class ServiceTypeOptions
-{
-    private ServiceTypeOptions(ServiceTypeKind kind, IEnumerable<Type>? serviceTypes)
-    {
-        Kind = kind;
-        ServiceTypes = serviceTypes;
-    }
-
-    public ServiceTypeKind Kind { get; }
-    public IEnumerable<Type>? ServiceTypes { get; }
-
-    internal static ServiceTypeOptions Self => new(ServiceTypeKind.Self, null);
-    internal static ServiceTypeOptions Types(IEnumerable<Type> types) => new(ServiceTypeKind.Type, types);
-    internal static ServiceTypeOptions AllImplementedInterfaces => new(ServiceTypeKind.AllImplementedInterfaces, null);
 }

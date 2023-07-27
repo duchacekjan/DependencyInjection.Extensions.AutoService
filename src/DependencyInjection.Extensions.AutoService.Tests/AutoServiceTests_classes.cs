@@ -8,12 +8,12 @@ namespace DependencyInjection.Extensions.AutoService.Tests;
 
 public partial class AutoServiceTests
 {
-    [AutoService(typeof(ITestA))]
+    [AutoService(ServiceLifetime.Transient, typeof(ITestA))]
     public class SingleImplementation : ITestA
     {
     }
 
-    [AutoService]
+    [AutoService(selfAsService: true)]
     private class SingleSelfImplementation
     {
     }
@@ -33,21 +33,19 @@ public partial class AutoServiceTests
     {
     }
 
-    [AutoService]
-    [AutoService(typeof(ITestA))]
-    [AutoService(typeof(ITestB))]
+    [AutoService(selfAsService: true)]
+    [AutoService(ServiceLifetime.Transient, typeof(ITestA), typeof(ITestB))]
     private class MultipleImplementation : ITestA, ITestB
     {
     }
 
-    [AutoService]
-    [AutoService(typeof(IBaseA))]
-    [AutoService(typeof(IBaseB))]
+    [AutoService(selfAsService: true)]
+    [AutoService(ServiceLifetime.Transient, typeof(IBaseA), typeof(IBaseB))]
     private class ChildImplementation : BaseImplementation
     {
     }
 
-    [AutoService(typeof(BaseImplementation))]
+    [AutoService(ServiceLifetime.Transient, typeof(BaseImplementation))]
     private class InheritedImplementation : BaseImplementation
     {
     }

@@ -42,39 +42,15 @@ public static class ServiceCollectionExtensions
             .Where(w => Attribute.IsDefined(w, typeof(AutoServiceAttribute)));
         foreach (var serviceImplementation in servicesImplementations)
         {
-            foreach (var autoServiceAttribute in serviceImplementation.GetCustomAttributes<AutoServiceAttribute>())
+            var serviceDescriptors = serviceImplementation
+                .GetCustomAttributes<AutoServiceAttribute>()
+                .SelectMany(s => s.GetServiceDescriptors(serviceImplementation));
+            foreach (var serviceDescriptor in serviceDescriptors)
             {
-                var serviceImplementationType = serviceImplementation.AsType();
-                var serviceType = autoServiceAttribute.ServiceType ?? serviceImplementationType;
-                if (IsServiceImplementation(serviceType, serviceImplementation))
-                {
-                    if (serviceImplementation.IsAbstract)
-                    {
-                        throw new NotSupportedException();
-                    }
-
-                    services.Add(new ServiceDescriptor(serviceType, serviceImplementationType, autoServiceAttribute.ServiceLifetime));
-                }
-                else
-                {
-                    throw new NotImplementingServiceTypeException(serviceType, serviceImplementationType);
-                }
+                services.Add(serviceDescriptor);
             }
         }
 
         return services;
-    }
-
-    /// <summary>
-    /// Determines if implementation can be used as service type
-    /// </summary>
-    /// <param name="service">Type of service</param>
-    /// <param name="implementation">Type info about implementation</param>
-    /// <returns></returns>
-    private static bool IsServiceImplementation(Type service, TypeInfo implementation)
-    {
-        return service == implementation.AsType()
-               || implementation.ImplementedInterfaces.Contains(service)
-               || implementation.IsAssignableTo(service);
     }
 }

@@ -31,50 +31,40 @@ public static class ServiceCollectionExtensions
     /// Registers all services implementations decorated with <see cref="AutoServiceAttribute"/> from
     /// given assemblies.
     /// </summary>
-    /// <param name="services">Collection of services</param>
-    /// <param name="assemblies">Assemblies containing services implementations</param>
+    /// <param name="services">Collection of services.</param>
+    /// <param name="assemblies">Assemblies containing services implementations.</param>
     /// <returns></returns>
-    /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/></exception>
-    /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type</exception>
+    /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/>.</exception>
+    /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type.</exception>
     public static IServiceCollection AddAutoServices(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+        => services.AddAutoServices(assemblies, false);
+
+    /// <summary>
+    /// Registers all services implementations decorated with <see cref="AutoServiceAttribute"/> from
+    /// given assemblies.
+    /// </summary>
+    /// <param name="services">Collection of services.</param>
+    /// <param name="assemblies">Assemblies containing services implementations.</param>
+    /// <param name="withErrors">Condition to get testing error registration.</param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/>.</exception>
+    /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type.</exception>
+    internal static IServiceCollection AddAutoServices(this IServiceCollection services, IEnumerable<Assembly> assemblies, bool withErrors)
     {
         var servicesImplementations = assemblies.Distinct().SelectMany(s => s.DefinedTypes)
-            .Where(w => Attribute.IsDefined(w, typeof(AutoServiceAttribute)));
+            .Where(w => Attribute.IsDefined(w, typeof(AutoServiceAttribute)))
+            .Where(w => withErrors || w.GetCustomAttributes<AutoServiceAttribute>().All(a => !a.HasError));
         foreach (var serviceImplementation in servicesImplementations)
         {
-            foreach (var autoServiceAttribute in serviceImplementation.GetCustomAttributes<AutoServiceAttribute>())
+            var serviceDescriptors = serviceImplementation
+                .GetCustomAttributes<AutoServiceAttribute>()
+                .SelectMany(s => s.GetServiceDescriptors(serviceImplementation));
+            foreach (var serviceDescriptor in serviceDescriptors)
             {
-                var serviceImplementationType = serviceImplementation.AsType();
-                var serviceType = autoServiceAttribute.ServiceType ?? serviceImplementationType;
-                if (IsServiceImplementation(serviceType, serviceImplementation))
-                {
-                    if (serviceImplementation.IsAbstract)
-                    {
-                        throw new NotSupportedException();
-                    }
-
-                    services.Add(new ServiceDescriptor(serviceType, serviceImplementationType, autoServiceAttribute.ServiceLifetime));
-                }
-                else
-                {
-                    throw new NotImplementingServiceTypeException(serviceType, serviceImplementationType);
-                }
+                services.Add(serviceDescriptor);
             }
         }
 
         return services;
-    }
-
-    /// <summary>
-    /// Determines if implementation can be used as service type
-    /// </summary>
-    /// <param name="service">Type of service</param>
-    /// <param name="implementation">Type info about implementation</param>
-    /// <returns></returns>
-    private static bool IsServiceImplementation(Type service, TypeInfo implementation)
-    {
-        return service == implementation.AsType()
-               || implementation.ImplementedInterfaces.Contains(service)
-               || implementation.IsAssignableTo(service);
     }
 }

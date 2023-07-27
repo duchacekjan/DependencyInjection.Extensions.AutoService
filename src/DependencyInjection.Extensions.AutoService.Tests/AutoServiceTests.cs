@@ -1,3 +1,4 @@
+using System.Reflection;
 using DependencyInjection.Extensions.AutoService.Tests.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,6 +62,14 @@ public partial class AutoServiceTests
         services.AddAutoServices();
         var executingAssemblyServices = ServicesFromExecutingAssembly();
         services.Should().HaveSameCount(executingAssemblyServices);
+    }
+    
+    [Fact]
+    public void Should_throw_on_adding_services()
+    {
+        var services = new ServiceCollection();
+        services.Invoking(i => i.AddAutoServices(new[] { Assembly.GetExecutingAssembly() }, true))
+            .Should().Throw<NotImplementingServiceTypeException>();
     }
 
     [Theory]

@@ -60,6 +60,11 @@ public partial class AutoServiceTests
     {
     }
 
+    [AutoService(typeof(ITestA), true)]
+    private class MissingImplementation
+    {
+    }
+
     private static IServiceCollection ServicesFromExecutingAssembly()
     {
         var services = new ServiceCollection();

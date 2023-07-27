@@ -16,6 +16,11 @@ public class AutoServiceAttribute : Attribute
     private readonly List<Type> _serviceTypes;
 
     /// <summary>
+    /// Property for testing purposes.
+    /// </summary>
+    internal bool HasError { get; }
+
+    /// <summary>
     /// Registers decorated class as service implementation.
     /// </summary>
     /// <param name="selfImplementation">Handling decorated class as service. <see cref="SelfImplementationUsage"/></param>
@@ -48,6 +53,12 @@ public class AutoServiceAttribute : Attribute
     {
     }
 
+    internal AutoServiceAttribute(Type serviceType, bool hasError)
+        : this(serviceType)
+    {
+        HasError = hasError;
+    }
+
     /// <summary>
     /// Common constructor for auto registering services.
     /// </summary>
@@ -70,8 +81,12 @@ public class AutoServiceAttribute : Attribute
     /// <returns></returns>
     public IEnumerable<ServiceDescriptor> GetServiceDescriptors(TypeInfo decoratedTypeInfo)
     {
+        if (decoratedTypeInfo.IsAbstract)
+        {
+            throw new NotSupportedException();
+        }
+        
         var result = new List<ServiceDescriptor>();
-
 
         if (_allImplementedInterfaces)
         {
@@ -138,11 +153,6 @@ public class AutoServiceAttribute : Attribute
         {
             if (IsServiceImplementation(serviceType, decoratedTypeInfo))
             {
-                if (decoratedTypeInfo.IsAbstract)
-                {
-                    throw new NotSupportedException();
-                }
-
                 result.Add(new ServiceDescriptor(serviceType, implementationType, serviceLifetime));
             }
             else

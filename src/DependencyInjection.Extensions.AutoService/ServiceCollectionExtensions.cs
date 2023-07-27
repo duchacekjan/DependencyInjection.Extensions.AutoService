@@ -37,7 +37,7 @@ public static class ServiceCollectionExtensions
     /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/>.</exception>
     /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type.</exception>
     public static IServiceCollection AddAutoServices(this IServiceCollection services, IEnumerable<Assembly> assemblies)
-        => services.AddAutoServices(assemblies, null);
+        => services.AddAutoServices(assemblies, false);
 
     /// <summary>
     /// Registers all services implementations decorated with <see cref="AutoServiceAttribute"/> from
@@ -45,15 +45,15 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">Collection of services.</param>
     /// <param name="assemblies">Assemblies containing services implementations.</param>
-    /// <param name="excludeCondition">Exclude condition for testing purposes.</param>
+    /// <param name="withErrors">Condition to get testing error registration.</param>
     /// <returns></returns>
     /// <exception cref="NotSupportedException">When Abstract class is decorated with <see cref="AutoServiceAttribute"/>.</exception>
     /// <exception cref="NotImplementingServiceTypeException">When decorated class does not implement service type.</exception>
-    internal static IServiceCollection AddAutoServices(this IServiceCollection services, IEnumerable<Assembly> assemblies, Func<TypeInfo, bool>? excludeCondition)
+    internal static IServiceCollection AddAutoServices(this IServiceCollection services, IEnumerable<Assembly> assemblies, bool withErrors)
     {
         var servicesImplementations = assemblies.Distinct().SelectMany(s => s.DefinedTypes)
             .Where(w => Attribute.IsDefined(w, typeof(AutoServiceAttribute)))
-            .Where(w => excludeCondition?.Invoke(w) != true);
+            .Where(w => withErrors || w.GetCustomAttributes<AutoServiceAttribute>().All(a => !a.HasError));
         foreach (var serviceImplementation in servicesImplementations)
         {
             var serviceDescriptors = serviceImplementation

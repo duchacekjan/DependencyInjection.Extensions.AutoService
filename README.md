@@ -33,8 +33,8 @@ dotnet add package DependencyInjection.Extensions.AutoService
 ## Decorate classes
 
 ```csharp
-// Now you have service registration on one place with its implementation and you do not have to search
-// where to put the registration
+// Decorate class as auto service and then you will have registration on one place with its implementation 
+// and you will see that class is registered as service implementation
 [AutoService]
 public class Service : IServiceA, IServiceB
 ```
@@ -48,7 +48,7 @@ private static IServiceCollection ConfigureServices(IServiceCollection services)
     services.AddAutoServices(executingAssembly);
 
     // optionally register all auto services from calling assembly
-    // services.AddAutoServices(executingAssembly);
+    // services.AddAutoServices();
         
     //Add other registration
     ...

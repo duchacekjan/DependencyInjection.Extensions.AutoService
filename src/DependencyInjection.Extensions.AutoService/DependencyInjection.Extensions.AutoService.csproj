@@ -4,7 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
         <Authors>Jan Duchacek</Authors>
         <Company>Jan Duchacek</Company>
         <Copyright>Copyright (c) Jan Duchacek</Copyright>
@@ -15,7 +15,11 @@
         <RepositoryType>git</RepositoryType>
         <LangVersion>latest</LangVersion>
         <Title>DependencyInjection.Extensions.AutoService</Title>
+        <PackageReleaseNotes>Added correct readme</PackageReleaseNotes>
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="DependencyInjection.Extensions.AutoService.Tests" />
     </ItemGroup>

@@ -85,7 +85,7 @@ public class AutoServiceAttribute : Attribute
         {
             throw new NotSupportedException();
         }
-        
+
         var result = new List<ServiceDescriptor>();
 
         if (_allImplementedInterfaces)
@@ -174,6 +174,6 @@ public class AutoServiceAttribute : Attribute
     {
         return service == implementation.AsType()
                || implementation.ImplementedInterfaces.Contains(service)
-               || implementation.IsAssignableTo(service);
+               || service.IsAssignableFrom(implementation);
     }
 }

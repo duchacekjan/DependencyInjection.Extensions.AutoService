@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <Authors>Jan Duchacek</Authors>
         <Company>Jan Duchacek</Company>
         <Copyright>Copyright (c) Jan Duchacek</Copyright>
@@ -15,7 +15,7 @@
         <RepositoryType>git</RepositoryType>
         <LangVersion>latest</LangVersion>
         <Title>DependencyInjection.Extensions.AutoService</Title>
-        <PackageReleaseNotes>Added correct readme</PackageReleaseNotes>
+        <PackageReleaseNotes>Changed target framework to netstandard2.1</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\..\README.md" Pack="true" PackagePath="\" />

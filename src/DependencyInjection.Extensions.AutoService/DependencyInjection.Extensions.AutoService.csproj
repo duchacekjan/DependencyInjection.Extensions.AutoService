@@ -4,11 +4,12 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <Authors>Jan Duchacek</Authors>
         <Company>Jan Duchacek</Company>
         <Copyright>Copyright (c) Jan Duchacek</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>Microsoft dependency injection; Auto service; AutoService; AutoServiceAttribute; Auto registration</PackageTags>
         <Description>Auto register service implementation type in Microsoft DI</Description>
         <RepositoryUrl>https://github.com/duchacekjan/DependencyInjection.Extensions.AutoService</RepositoryUrl>

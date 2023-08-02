@@ -63,6 +63,16 @@ public partial class AutoServiceTests
         var executingAssemblyServices = ServicesFromExecutingAssembly();
         services.Should().HaveSameCount(executingAssemblyServices);
     }
+
+    [Fact]
+    public void Should_not_register_self_implementation()
+    {
+        var services = ServicesFromExecutingAssembly();
+        var sut = services.BuildServiceProvider();
+
+        var actual = sut.GetService<NoImplementation>();
+        actual.Should().BeNull();
+    }
     
     [Fact]
     public void Should_throw_on_adding_services()

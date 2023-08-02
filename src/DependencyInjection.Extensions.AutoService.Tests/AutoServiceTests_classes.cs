@@ -59,6 +59,11 @@ public partial class AutoServiceTests
     private class InheritedTransientImplementation : BaseImplementation
     {
     }
+    
+    [AutoService(SelfImplementationUsage.Disabled)]
+    private class NoImplementation
+    {
+    }
 
     [AutoService(typeof(ITestA), true)]
     private class MissingImplementation

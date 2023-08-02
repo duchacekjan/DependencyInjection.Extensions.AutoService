@@ -119,10 +119,6 @@ public class AutoServiceAttribute : Attribute
         var result = decoratedTypeInfo.ImplementedInterfaces
             .Select(s => new ServiceDescriptor(s, decoratedTypeInfo.AsType(), serviceLifetime))
             .ToList();
-        if (result.Count == 0)
-        {
-            result.Add(GetSelfDescriptor(decoratedTypeInfo.AsType(), serviceLifetime));
-        }
 
         return result;
     }

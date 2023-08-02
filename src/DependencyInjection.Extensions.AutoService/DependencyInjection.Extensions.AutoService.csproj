@@ -4,28 +4,28 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.3</Version>
+        <Version>1.0.4</Version>
         <Authors>Jan Duchacek</Authors>
         <Company>Jan Duchacek</Company>
         <Copyright>Copyright (c) Jan Duchacek</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>USAGE.md</PackageReadmeFile>
         <PackageTags>Microsoft dependency injection; Auto service; AutoService; AutoServiceAttribute; Auto registration</PackageTags>
         <Description>Auto register service implementation type in Microsoft DI</Description>
         <RepositoryUrl>https://github.com/duchacekjan/DependencyInjection.Extensions.AutoService</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <LangVersion>latest</LangVersion>
         <Title>DependencyInjection.Extensions.AutoService</Title>
-        <PackageReleaseNotes>Changed target framework to netstandard2.1</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixing usage of disabled self implementation</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+        <None Include="USAGE.md" Pack="true" PackagePath="\" />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="DependencyInjection.Extensions.AutoService.Tests" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     </ItemGroup>
 
 </Project>
